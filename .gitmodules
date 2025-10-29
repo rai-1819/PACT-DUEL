@@ -1,0 +1,3 @@
+[submodule "private-module"]
+	path = private-module
+	url = https://github.com/rai-1819/pactDUEL_private.git
