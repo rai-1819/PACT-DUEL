@@ -1,6 +1,3 @@
-#!/bin/bash
-
-cat << 'EOF' > README.md
 # ⚔️ PACT DUEL – Gentleman’s Warfare of Calculated Honor
 
 **“Every bond hides a blade; every pact ends in a duel.”**  
