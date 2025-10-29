@@ -1,0 +1,392 @@
+<!-- All gambits the added with lil faulty logics  -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PACT DUEL ⚔️</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to bottom right, #1e293b, #334155);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+    .button-grid {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    button {
+      padding: 1rem 2rem;
+      font-size: 1.1rem;
+      border: none;
+      border-radius: 12px;
+      background-color: #475569;
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background-color: #64748b;
+    }
+    .card {
+      background-color: #1e293b;
+      padding: 1rem;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+      max-width: 700px;
+      white-space: pre-line;
+      margin-top: 1rem;
+    }
+    .dropdown, .guess-box, .submit-section {
+      margin: 1em;
+    }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+  <h1>PACT DUEL ⚔️</h1><br>
+  <p>A gentleman's war of minds begins now.</p>
+  <p><b>”EVERY BOND HIDES A BLADE, EVERY PACT ENDS IN A DUEL”</b></p>
+  <p>Choose wisely.</p>
+<br>
+  <div class="guess-box">
+    <label for="masterGuess">MASTER GAMBIT – Guess opponent's move (disables main move):</label>
+    <select id="masterGuess" onchange="disableMainMovesIfUsed()">
+      <option value="">(Not using)</option>
+      <option value="Split">Split</option>
+      <option value="Steal">Steal</option>
+      <option value="Impostor">Impostor</option>
+    </select>
+    <button onclick="submitMasterGambit()">Submit Master Gambit</button>
+  </div>
+
+  <div class="button-grid" id="mainMoves">
+    <button onclick="makeChoice('Split')">Split</button>
+    <button onclick="makeChoice('Steal')">Steal</button>
+    <button onclick="makeChoice('Impostor')">Impostor</button>
+  </div>
+
+  <div id="result" class="card hidden"></div>
+  <div id="gambitUI" class="card hidden"></div>
+
+  <script>
+    const outcomeMatrix = {
+      Split: {
+        Split: 'Both share the prize 💖💰💰',
+        Steal: 'You lose everything 😭',
+        Impostor: 'They misjudged… you Win 🔥'
+      },
+      Steal: {
+        Split: 'You take it all 😈',
+        Steal: 'Both lose 💀',
+        Impostor: 'Impostor robs you 💰'
+      },
+      Impostor: {
+        Split: 'You lose for breaking trust ❌',
+        Steal: 'You rob the robber 💰',
+        Impostor: 'CODE OF DECEIT - Proceeding to Gambit ⚔️'
+      }
+    };
+
+    const gambits = [
+      'Karma Gambit', 'Imposter Gambit', 'Ragnarok Gambit',
+      'Redemption Gambit', 'Duality Gambit', 'Shadow Gambit',
+      'Ouroboros Gambit', 'Samsara Gambit'
+    ];
+
+    function disableMainMovesIfUsed() {
+      const guess = document.getElementById("masterGuess").value;
+      const buttons = document.querySelectorAll("#mainMoves button");
+      buttons.forEach(btn => btn.disabled = guess !== "");
+    }
+
+    function submitMasterGambit() {
+      const guess = document.getElementById("masterGuess").value;
+      if (!guess) return alert("Select a move to guess using Master Gambit.");
+
+      const opponentOptions = ['Split', 'Steal', 'Impostor'];
+      const opponentChoice = opponentOptions[Math.floor(Math.random() * 3)];
+      const resultBox = document.getElementById('result');
+      resultBox.classList.remove('hidden');
+
+      let result = `You used MASTER GAMBIT.\nYou guessed: ${guess}.\nOpponent played: ${opponentChoice}.\n\n`;
+
+      if (guess === opponentChoice) {
+        result += `MASTER GAMBIT SUCCESS! You gain 200 gold ✨`;
+      } else {
+        result += `MASTER GAMBIT FAILED! You gain nothing. They proceed freely.`;
+      }
+      resultBox.innerText = result;
+    }
+
+    function makeChoice(playerChoice) {
+      const opponentOptions = ['Split', 'Steal', 'Impostor'];
+      const opponentChoice = opponentOptions[Math.floor(Math.random() * 3)];
+      const resultBox = document.getElementById('result');
+      const gambitBox = document.getElementById('gambitUI');
+      resultBox.classList.remove('hidden');
+      gambitBox.classList.add('hidden');
+
+      let result = `You chose ${playerChoice}.\nOpponent chose ${opponentChoice}.\n\n`;
+      result += `Result: ${outcomeMatrix[playerChoice][opponentChoice]}`;
+
+      if (playerChoice === 'Impostor' && opponentChoice === 'Impostor') {
+        const chosenGambit = gambits[Math.floor(Math.random() * gambits.length)];
+        result += `\n\n➡️ Both played Impostor.\nCODE OF DECEIT activated. Proceeding to: ${chosenGambit}`;
+        resultBox.innerText = result;
+        triggerGambit(chosenGambit);
+        return;
+      }
+
+      resultBox.innerText = result;
+    }
+
+    function triggerGambit(gambit) {
+      if (gambit === 'Karma Gambit') showKarmaGambit();
+      else if (gambit === 'Shadow Gambit') showShadowGambit();
+      else if (gambit === 'Imposter Gambit') showImposterGambit();
+      else if (gambit === 'Ragnarok Gambit') showRagnarokGambit();
+      else if (gambit === 'Redemption Gambit') showRedemptionGambit();
+      else if (gambit === 'Duality Gambit') showDualityGambit();
+      else if (gambit === 'Ouroboros Gambit') showOuroborosGambit();
+      else if (gambit === 'Samsara Gambit') showSamsaraGambit();
+      else showGenericGambit(gambit);
+    }
+
+    function showKarmaGambit() {
+      const gambitBox = document.getElementById('gambitUI');
+      gambitBox.innerHTML = `🌗 <b>Karma Gambit</b><br><br>Choose your move:<br>
+        <button onclick="resolveKarma('Split')">Split</button>
+        <button onclick="resolveKarma('Steal')">Steal</button>
+        <button onclick="resolveKarma('Mirror')">Mirror</button>`;
+      gambitBox.classList.remove('hidden');
+    }
+
+    function resolveKarma(playerChoice) {
+      const opponentOptions = ['Split', 'Steal', 'Mirror'];
+      const opponentChoice = opponentOptions[Math.floor(Math.random() * 3)];
+      const resultBox = document.getElementById('result');
+
+      let result = `You chose: ${playerChoice}\nOpponent chose: ${opponentChoice}\n\n`;
+
+      if ((playerChoice === 'Mirror' && opponentChoice === 'Split') ||
+          (playerChoice === 'Split' && opponentChoice === 'Mirror')) {
+        result += "Result: 50-50 Share";
+      } else if ((playerChoice === 'Mirror' && opponentChoice === 'Steal') ||
+                 (playerChoice === 'Steal' && opponentChoice === 'Mirror')) {
+        result += "Result: Both Lose";
+      } else if (playerChoice === 'Mirror' && opponentChoice === 'Mirror') {
+        result += "Both mirrored! Proceed to Shadow Gambit ⚔️";
+        showShadowGambit();
+        return;
+      } else if (playerChoice === opponentChoice) {
+        result += `Draw: Both chose ${playerChoice}`;
+      } else {
+        result += `Classic confrontation: ${playerChoice} vs ${opponentChoice}`;
+      }
+
+      resultBox.innerText = result;
+    }
+
+    function showShadowGambit() {
+      const gambitBox = document.getElementById('gambitUI');
+      gambitBox.innerHTML = `🕶️ <b>Shadow Gambit</b><br><br>
+        Choose first move:<br>
+        <select id='shadowFirst'>
+          <option value='Split'>Split</option>
+          <option value='Steal'>Steal</option>
+        </select><br><br>
+        Choose reversal:<br>
+        <select id='shadowReverse'>
+          <option value='Keep'>KEEP</option>
+          <option value='Reverse'>REVERSE</option>
+        </select><br><br>
+        <button onclick="resolveShadowGambit()">Resolve Shadow Gambit</button>`;
+      gambitBox.classList.remove('hidden');
+    }
+
+    function resolveShadowGambit() {
+      const first = document.getElementById('shadowFirst').value;
+      const reverse = document.getElementById('shadowReverse').value;
+      const opponentFirst = ['Split', 'Steal'][Math.floor(Math.random() * 2)];
+      const opponentReverse = ['Keep', 'Reverse'][Math.floor(Math.random() * 2)];
+
+      const resultBox = document.getElementById('result');
+      let result = `You chose: ${first}, ${reverse}\nOpponent chose: ${opponentFirst}, ${opponentReverse}\n\n`;
+
+      if (reverse === 'Reverse' && opponentReverse === 'Keep') {
+        result += `Reversal activated: Outcome flips. ${opponentFirst} wins.`;
+      } else if (reverse === 'Keep' && opponentReverse === 'Reverse') {
+        result += `Opponent reversed: Outcome flips. ${first} wins.`;
+      } else if (reverse === 'Reverse' && opponentReverse === 'Reverse') {
+        result += `Both reversed: Cancel each other. Original outcome holds.`;
+      } else {
+        result += `Both kept. Original outcome applies: ${first} vs ${opponentFirst}.`;
+      }
+
+      resultBox.innerText = result;
+    }
+    function showImposterGambit() {
+      const gambitBox = document.getElementById('gambitUI');
+      gambitBox.innerHTML = `🎭 <b>Imposter Gambit</b><br><br>
+        Justify your betrayal:<br>
+        <textarea id='justification' placeholder='Explain your noble reason...'></textarea><br>
+        <button onclick="resolveImposterGambit()">Submit Justification</button>`;
+      gambitBox.classList.remove('hidden');
+    }
+
+    function resolveImposterGambit() {
+      const text = document.getElementById('justification').value;
+      const resultBox = document.getElementById('result');
+      const success = text.trim().length > 20;
+      resultBox.innerText = success ? `Audience was moved by your tale. Betrayal justified! 🏆` : `Too weak... the audience condemns you. ❌`;
+    }
+
+    function showRagnarokGambit() {
+        const gambitBox = document.getElementById('gambitUI');
+        gambitBox.innerHTML = `🔥 <b>Ragnarok Gambit</b>: Final Greed Trial<br><br>
+            Choose your move:<br>
+            <button onclick="resolveRagnarok('Split')">Split</button>
+            <button onclick="resolveRagnarok('Steal')">Steal</button>
+            <button onclick="resolveRagnarok('Double Steal')">Double Steal</button>`;
+        gambitBox.classList.remove('hidden');
+    }
+
+    function resolveRagnarok(playerChoice) {
+        const options = ['Split', 'Steal', 'Double Steal'];
+        const opponentChoice = options[Math.floor(Math.random() * 3)];
+        const resultBox = document.getElementById('result');
+
+        let result = `You chose: ${playerChoice}\nOpponent chose: ${opponentChoice}\n\n`;
+
+        if (playerChoice === 'Double Steal' && opponentChoice === 'Split') {
+            result += 'You plunder everything. 💣 You win completely!';
+        } else if (playerChoice === 'Split' && opponentChoice === 'Double Steal') {
+            result += 'Opponent plundered everything. You lose. ☠️';
+        } else if (playerChoice === 'Double Steal' && opponentChoice === 'Steal') {
+            result += 'You double crossed a thief. You take most, they get scraps. ⚔️';
+        } else if (playerChoice === 'Steal' && opponentChoice === 'Double Steal') {
+            result += 'They double crossed you. You get scraps. 😵';
+        } else if (playerChoice === 'Double Steal' && opponentChoice === 'Double Steal') {
+            result += 'Nuclear Greed! Both lose catastrophically. 🔥';
+        } else if (playerChoice === opponentChoice) {
+            result += `Stalemate: Both chose ${playerChoice}.`;
+        } else {
+            result += `Classic outcome: ${playerChoice} vs ${opponentChoice}`;
+        }
+
+        resultBox.innerText = result;
+    }
+
+    function showRedemptionGambit() {
+        const gambitBox = document.getElementById('gambitUI');
+        gambitBox.innerHTML = `💧 <b>Redemption Gambit</b>: Rebuild the Trust<br><br>
+            Choose your move:<br>
+            <button onclick="resolveRedemption('Split')">Split</button>
+            <button onclick="resolveRedemption('Steal')">Steal</button>
+            <button onclick="resolveRedemption('Double Split')">Double Split</button>`;
+        gambitBox.classList.remove('hidden');
+    }
+
+    function resolveRedemption(playerChoice) {
+        const options = ['Split', 'Steal', 'Double Split'];
+        const opponentChoice = options[Math.floor(Math.random() * 3)];
+        const resultBox = document.getElementById('result');
+
+        let result = `You chose: ${playerChoice}\nOpponent chose: ${opponentChoice}\n\n`;
+
+        if (playerChoice === 'Double Split' && opponentChoice === 'Double Split') {
+            result += 'Unheard of generosity! 80/80 share granted. 🤝';
+        } else if (playerChoice === 'Double Split' || opponentChoice === 'Double Split') {
+            result += 'One chose Double Split. Minor favor given: 30/70. 🌿';
+        } else if (playerChoice === 'Steal' && opponentChoice === 'Split') {
+            result += 'You betrayed. You gain all. ⚔️';
+        } else if (playerChoice === 'Split' && opponentChoice === 'Steal') {
+            result += 'You trusted. You lose. ☠️';
+        } else if (playerChoice === 'Steal' && opponentChoice === 'Steal') {
+            result += 'Mutual betrayal. All lost. 🔥';
+        } else {
+            result += 'Both chose Split. 50/50 share restored. ✨';
+        }
+
+        resultBox.innerText = result;
+    }
+    function showDualityGambit() {
+        const gambitBox = document.getElementById('gambitUI');
+        gambitBox.innerHTML = `♾️ <b>Duality Gambit</b>: Chaos Unleashed<br><br>
+            Choose your move:<br>
+            <button onclick="resolveDuality('Split')">Split</button>
+            <button onclick="resolveDuality('Steal')">Steal</button>
+            <button onclick="resolveDuality('Double Split')">Double Split</button>
+            <button onclick="resolveDuality('Double Steal')">Double Steal</button>`;
+        gambitBox.classList.remove('hidden');
+    }
+    function resolveDuality(playerChoice) {
+        const options = ['Split', 'Steal', 'Double Split', 'Double Steal'];
+        const opponentChoice = options[Math.floor(Math.random() * options.length)];
+        const resultBox = document.getElementById('result');
+
+        let result = `You chose: ${playerChoice}\nOpponent chose: ${opponentChoice}\n\n`;
+
+        if (playerChoice === 'Double Steal' && opponentChoice === 'Double Steal') {
+            result += 'Total destruction! Greed consumes both. 💥';
+        } else if (playerChoice === 'Double Steal' || opponentChoice === 'Double Steal') {
+            result += 'The one who chose Double Steal dominates. ☠️';
+        } else if (playerChoice === 'Double Split' && opponentChoice === 'Double Split') {
+            result += 'Mutual selflessness. 80/80 reward. ✨';
+        } else if (playerChoice === 'Double Split' || opponentChoice === 'Double Split') {
+            result += 'One chose Double Split. Other gains more. 30/70 sharing. 🌿';
+        } else if (playerChoice === 'Steal' && opponentChoice === 'Split') {
+            result += 'You win it all. ⚔️';
+        } else if (playerChoice === 'Split' && opponentChoice === 'Steal') {
+            result += 'You were robbed. 💔';
+        } else if (playerChoice === 'Steal' && opponentChoice === 'Steal') {
+            result += 'Both lose to mutual betrayal. 🔥';
+        } else {
+            result += 'Peaceful pact. 50/50 share. 🤝';
+        }
+
+        resultBox.innerText = result;
+    }
+
+            
+    function showOuroborosGambit() {
+      alert("🐍 OUROBOROS GAMBIT\n\nThe cycle returns. The game will now resolve through traditional Split and Steal. Master Gambit and Impostor are no longer options.");
+
+      document.querySelector('.guess-box').style.display = 'none';
+
+      const mainButtons = document.querySelectorAll('#mainMoves button');
+      mainButtons.forEach(btn => {
+        if (btn.textContent === 'Impostor') {
+          btn.style.display = 'none';
+        }
+      });
+    }
+
+    function showSamsaraGambit() {
+      alert("🔁 SAMSARA GAMBIT\n\nThe wheel turns again. The game shall begin anew — but now with revealed intentions. Rebirth comes without innocence.");
+      location.reload();
+    }
+
+    // Generic Gambit Handler    
+    function showGenericGambit(name) {
+      const gambitBox = document.getElementById('gambitUI');
+      gambitBox.innerHTML = `🎲 <b>${name}</b> activated. Simulating now...<br><br>
+        (Further logic to be implemented for this gambit)`;
+      gambitBox.classList.remove('hidden');
+    }
+  </script>
+</body>
+</html>
