@@ -119,3 +119,6 @@ Honor or Greed — you choose.
 
 > You don’t just *play* PACT DUEL…  
 > You *become* who you truly are.
+
+
+🔒 Internal game logic, advanced strategy design, and proprietary assets are maintained in a private repository for intellectual property protection.
